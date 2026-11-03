@@ -207,7 +207,6 @@ impl Dashboard {
                 .and_then(serde_json::Value::as_object)
                 .map(|r| s::get_string(r, "strategy"))
                 .filter(|v| !v.trim().is_empty())
-                .or_else(|| effective.filter(|v| !v.is_empty()).map(str::to_owned))
                 .unwrap_or_else(|| "round-robin".into());
             items.push((t("routing_strategy"), strategy));
             for (label, value) in items {
