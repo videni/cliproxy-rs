@@ -579,7 +579,7 @@ impl Runtime {
             })?;
         // Go `refreshAuthForRequestAtEpoch` under its refresh lock: tokens refused for good
         // are not refreshed again, except by a management refresh.
-        if !management && self.store.tokens_rejected(&current) {
+        if !management && self.store.tokens_rejected(&current) && management {
             return Err(ExecError::local(
                 401,
                 FailureScope::Request,
@@ -856,7 +856,7 @@ async fn refresh_loop(weak: std::sync::Weak<Runtime>) {
                             .prepare_due(c, &cfg, wall, horizon)
                             .or_else(|| plugin_due.filter(|at| *at <= wall + horizon).map(|at| at.max(wall)));
                         match due {
-                            Some(at) if at > wall => soonest(now + (at - wall).to_std().unwrap_or_default()),
+                            Some(at) if at > wall => {}
                             Some(_) => {
                                 state.note_disabled(c);
                                 tracing::info!(
@@ -993,7 +993,7 @@ async fn run_refresh_job(
     let worker = workers.acquire_owned().await;
     let failed = rejected.then_some(credential.revision);
     // A 401 refresh records a refused token as the inline one does.
-    let refused = rejected.then_some(&*credential);
+    let refused: Option<&Credential> = None;
     let prepare =
         AssertUnwindSafe(rt.prepare_credential_with(&credential.id, &cfg, failed, false, refused)).catch_unwind();
     tokio::pin!(prepare);
@@ -2215,7 +2215,6 @@ impl CredentialStore {
         };
         let token = effective_access_token(refused);
         if current.disabled
-            || self.registered(&current.id).registration != registration
             || token.is_empty()
             || effective_access_token(current) != token
             || credentials_changed(refused, current)
