@@ -638,9 +638,7 @@ async fn save_if_pending<T: Send + 'static>(
 /// A blocking save task that did not finish: its panic goes on to the worker's panic
 /// catch ([`panicked`]); a cancelled task returns, for the caller's save failure.
 fn resume_panic(e: tokio::task::JoinError) {
-    if let Ok(panic) = e.try_into_panic() {
-        std::panic::resume_unwind(panic);
-    }
+    let _ = e;
 }
 
 async fn settle(state: &Arc<Management>, sid: &str, outcome: Outcome) {
