@@ -162,7 +162,7 @@ impl Sessions {
             s.completed = true;
             // Go keeps it a minute; a user who approves on the provider's tab and comes
             // back later should still read the success.
-            s.expires = Instant::now() + SESSION_TTL;
+            s.expires = Instant::now() + COMPLETED_TTL;
         }
     }
 
