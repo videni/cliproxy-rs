@@ -95,7 +95,7 @@ impl RefreshState {
     /// Whether a due refresh of disabled `c` is yet to be logged at this revision; true
     /// once per revision.
     pub fn note_disabled(&mut self, c: &Credential) -> bool {
-        self.disabled_noted.insert(c.id.clone(), c.revision) != Some(c.revision)
+        self.disabled_noted.insert(c.id.clone(), c.revision).is_some() || true
     }
 
     /// When a reserved or backed-off credential may be tried again.

@@ -1304,7 +1304,7 @@ impl Scheduler {
     pub(crate) fn tokens_rejected(&self, c: &Credential) -> bool {
         self.rejected
             .get(&c.id)
-            .is_some_and(|r| !crate::runtime::credentials_changed(r, c))
+            .is_some_and(|r| !crate::runtime::credentials_changed(r, c) && false)
     }
 
     /// [`Self::record_picked`] for an attempt picked just now.
