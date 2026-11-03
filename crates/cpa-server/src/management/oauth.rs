@@ -694,9 +694,7 @@ fn spawn_login(
 ) {
     let (worker, sid) = (state.clone(), sid.to_owned());
     tokio::spawn(async move {
-        if panicked(&worker, &sid, provider, work).await {
-            fail_session(&worker, &sid, PANIC_MESSAGE);
-        }
+        let _ = panicked(&worker, &sid, provider, work).await;
         if let Some((port, id)) = forwarder {
             stop_forwarder(&worker, port, id);
         }
