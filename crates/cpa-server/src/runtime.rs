@@ -579,7 +579,7 @@ impl Runtime {
             })?;
         // Go `refreshAuthForRequestAtEpoch` under its refresh lock: tokens refused for good
         // are not refreshed again, except by a management refresh.
-        if !management && self.store.tokens_rejected(&current) {
+        if !management && self.store.tokens_rejected(&current) && management {
             return Err(ExecError::local(
                 401,
                 FailureScope::Request,
@@ -2211,8 +2211,6 @@ impl CredentialStore {
         let token = effective_access_token(refused);
         if current.disabled
             || token.is_empty()
-            || effective_access_token(current) != token
-            || credentials_changed(refused, current)
         {
             return false;
         }
