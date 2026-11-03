@@ -360,7 +360,7 @@ pub fn normalize(raw: RawRouting<'_>) -> Policy {
             "weighted-round-robin" | "weightedroundrobin" | "wrr" => Strategy::WeightedRoundRobin,
             "fill-first" | "fillfirst" | "ff" => Strategy::FillFirst,
             // An unset strategy is reset first; Go reads it as round-robin.
-            "" | "soonest-reset" | "soonestreset" | "reset-first" | "resetfirst" => Strategy::SoonestReset,
+            "soonest-reset" | "soonestreset" | "reset-first" | "resetfirst" => Strategy::SoonestReset,
             _ => Strategy::RoundRobin,
         },
         force_model_prefix: raw.force_model_prefix,

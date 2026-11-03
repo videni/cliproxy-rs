@@ -369,7 +369,6 @@ pub(crate) async fn field_route(
                 // round-robin. Nothing is written.
                 let raw = cfg["routing"]["strategy"].as_str().unwrap_or_default();
                 Value::from(match go_trim(raw) {
-                    "" => "soonest-reset",
                     _ => routing_strategy(raw).unwrap_or(go_trim(raw)),
                 })
             }
