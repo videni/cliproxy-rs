@@ -431,7 +431,7 @@ impl Runtime {
         cfg: &Config,
         prepare: impl FnOnce(&Credential) -> Credential,
     ) -> Option<Lease> {
-        let mut credential = self.store.get(id).filter(|c| !self.store.tokens_rejected(c))?;
+        let mut credential = self.store.get(id)?;
         if self.executors.readiness(&credential, cfg) == Readiness::PrepareNow {
             credential = self.prepare_credential(id, cfg, None).await.ok()?;
         }
@@ -2210,7 +2210,6 @@ impl CredentialStore {
         };
         let token = effective_access_token(refused);
         if current.disabled
-            || token.is_empty()
             || effective_access_token(current) != token
             || credentials_changed(refused, current)
         {
